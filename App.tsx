@@ -8,98 +8,82 @@
  * @format
  */
 
-import React, { useEffect, useState } from 'react';
-import {
-  Alert,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Alert, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import GetLocation from 'react-native-get-location';
 
 interface ILocation {
-  latitude: number,
-  longitude: number,
-  latitudeDelta : number,
-  longitudeDelta : number
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
 }
 
+function region(lat: any, lon: any, distance: any) {
+  distance = distance / 2;
 
-function region(lat:any, lon : any, distance : any) {
+  const circumference = 40075;
+  const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
+  const angularDistance = distance / circumference;
 
-  distance = distance/2
-
-  const circumference = 40075
-  const oneDegreeOfLatitudeInMeters = 111.32 * 1000
-  const angularDistance = distance/circumference
-
-  const latitudeDelta = distance / oneDegreeOfLatitudeInMeters
-  const longitudeDelta = Math.abs(Math.atan2(
-          Math.sin(angularDistance)*Math.cos(lat),
-          Math.cos(angularDistance) - Math.sin(lat) * Math.sin(lat)))
+  const latitudeDelta = distance / oneDegreeOfLatitudeInMeters;
+  const longitudeDelta = Math.abs(
+    Math.atan2(
+      Math.sin(angularDistance) * Math.cos(lat),
+      Math.cos(angularDistance) - Math.sin(lat) * Math.sin(lat),
+    ),
+  );
 
   return {
-      latitudeDelta,
-      longitudeDelta,
-  }
+    latitudeDelta,
+    longitudeDelta,
+  };
 }
-
-async function position(){
-
-  var data : any 
-
-  const location = await GetLocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 100000,
-  })
-
-  const {latitudeDelta,longitudeDelta} =  region(location.latitude, location.longitude, location.accuracy);
-  // console.log(location);
-  
-  data = location;
-  // return data = {
-  //   latitude: location.latitude,
-  //   longitude: location.longitude,
-  //   latitudeDelta,
-  //   longitudeDelta
-  // }
-
-  // console.log(data);
-
-  return data;
-  
-}
-var a = position();
-console.log(a);
 
 const App = () => {
-  const [currentLocation, setcurrentLocation] = useState<ILocation>()
+  const [currentLocation, setcurrentLocation] = useState<ILocation>();
 
-  useEffect(  ()  =>  {
+  useEffect(() => {
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 15000,
+    })
+      .then(location => {
+        // console.log(location);
+        const {latitudeDelta, longitudeDelta} = region(
+          location.latitude,
+          location.longitude,
+          location.accuracy,
+        );
+        setcurrentLocation({
+          latitude: location.latitude,
+          longitude: location.longitude,
+          latitudeDelta: latitudeDelta,
+          longitudeDelta: longitudeDelta,
+        });
+      })
+      .catch(error => {
+        const {code, message} = error;
+        console.warn(code, message);
+      });
+  }, [currentLocation]);
 
-    // position();
-    // console.log(data);
-    
-
-    
-  }, []);
-
-  return (
-
-    <SafeAreaView style={{flex: 1}}>
-      <View style={styles.container}>
-        <MapView
-          style={styles.mapStyle}
-          initialRegion={{
-            latitude:  -18.90098,
-            longitude: 47.5507109,
-            latitudeDelta: 0.00013264912390426213,
-            longitudeDelta: 0.0003108147403696167,
-          }}
-          provider={PROVIDER_GOOGLE}>
-          {/* <Marker
+  if (currentLocation) {
+    return (
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.container}>
+          <MapView
+            style={styles.mapStyle}
+            initialRegion={{
+              latitude: currentLocation.latitude,
+              longitude: currentLocation.longitude,
+              latitudeDelta: currentLocation.latitudeDelta,
+              longitudeDelta: currentLocation.longitudeDelta,
+            }}
+            provider={PROVIDER_GOOGLE}>
+            {/* <Marker
             draggable
             coordinate={{
               latitude: 0,
@@ -112,22 +96,29 @@ const App = () => {
             description={'This is a description of the marker'}
           /> */}
 
-          <Marker
-            draggable
-            coordinate={{
-              latitude: -18.90098,
-              longitude: 47.5507109,
-            }}
-            onDragEnd={e =>
-              Alert.alert(JSON.stringify(e.nativeEvent.coordinate))
-            }
-            title={'New Marker'}
-            description={'This is a description of the new marker'}
-          />
-        </MapView>
+            <Marker
+              draggable
+              coordinate={{
+                latitude: -18.90098,
+                longitude: 47.5507109,
+              }}
+              onDragEnd={e =>
+                Alert.alert(JSON.stringify(e.nativeEvent.coordinate))
+              }
+              title={'New Marker'}
+              description={'This is a description of the new marker'}
+            />
+          </MapView>
+        </View>
+      </SafeAreaView>
+    );
+  } else {
+    return (
+      <View>
+        <Text>Helllloo</Text>
       </View>
-    </SafeAreaView>
-  );
+    );
+  }
 };
 
 const styles = StyleSheet.create({
