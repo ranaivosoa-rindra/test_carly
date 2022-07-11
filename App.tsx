@@ -14,6 +14,10 @@ import {Alert, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import GetLocation from 'react-native-get-location';
 
+import Geolocation from '@react-native-community/geolocation';
+
+
+
 interface ILocation {
   latitude: number;
   longitude: number;
@@ -22,7 +26,7 @@ interface ILocation {
 }
 
 function region(lat: any, lon: any, distance: any) {
-  distance = distance / 2;
+  distance = distance / 0.2;
 
   const circumference = 40075;
   const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
@@ -46,28 +50,43 @@ const App = () => {
   const [currentLocation, setcurrentLocation] = useState<ILocation>();
 
   useEffect(() => {
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 15000,
-    })
-      .then(location => {
-        // console.log(location);
-        const {latitudeDelta, longitudeDelta} = region(
-          location.latitude,
-          location.longitude,
-          location.accuracy,
-        );
-        setcurrentLocation({
-          latitude: location.latitude,
-          longitude: location.longitude,
-          latitudeDelta: latitudeDelta,
-          longitudeDelta: longitudeDelta,
-        });
-      })
-      .catch(error => {
-        const {code, message} = error;
-        console.warn(code, message);
+    // GetLocation.getCurrentPosition({
+    //   enableHighAccuracy: true,
+    //   timeout: 200000,
+    // })
+      // .then(location => {
+      //   // console.log(location);
+        // const {latitudeDelta, longitudeDelta} = region(
+        //   location.latitude,
+        //   location.longitude,
+        //   location.accuracy,
+        // );
+        // setcurrentLocation({
+        //   latitude: location.latitude,
+        //   longitude: location.longitude,
+        //   latitudeDelta: latitudeDelta,
+        //   longitudeDelta: longitudeDelta,
+        // });
+      // })
+      // .catch(error => {
+      //   const {code, message} = error;
+      //   console.warn(code, message);
+      // });
+
+    Geolocation.getCurrentPosition(info => {
+
+      const {latitudeDelta, longitudeDelta} = region(
+        info.coords.latitude,
+        info.coords.longitude,
+        info.coords.accuracy,
+      );
+      setcurrentLocation({
+        latitude: info.coords.latitude,
+        longitude: info.coords.longitude,
+        latitudeDelta: latitudeDelta,
+        longitudeDelta: longitudeDelta,
       });
+    });
   }, [currentLocation]);
 
   if (currentLocation) {
