@@ -8,11 +8,10 @@
  * @format
  */
 
-import React, {useEffect, useState} from 'react';
-import {Alert, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import GetLocation from 'react-native-get-location';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import Geolocation from '@react-native-community/geolocation';
 
@@ -50,32 +49,11 @@ const App = () => {
   const [currentLocation, setcurrentLocation] = useState<ILocation>();
 
   useEffect(() => {
-    // GetLocation.getCurrentPosition({
-    //   enableHighAccuracy: true,
-    //   timeout: 200000,
-    // })
-      // .then(location => {
-      //   // console.log(location);
-        // const {latitudeDelta, longitudeDelta} = region(
-        //   location.latitude,
-        //   location.longitude,
-        //   location.accuracy,
-        // );
-        // setcurrentLocation({
-        //   latitude: location.latitude,
-        //   longitude: location.longitude,
-        //   latitudeDelta: latitudeDelta,
-        //   longitudeDelta: longitudeDelta,
-        // });
-      // })
-      // .catch(error => {
-      //   const {code, message} = error;
-      //   console.warn(code, message);
-      // });
+
 
     Geolocation.getCurrentPosition(info => {
 
-      const {latitudeDelta, longitudeDelta} = region(
+      const { latitudeDelta, longitudeDelta } = region(
         info.coords.latitude,
         info.coords.longitude,
         info.coords.accuracy,
@@ -91,7 +69,7 @@ const App = () => {
 
   if (currentLocation) {
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           <MapView
             style={styles.mapStyle}
@@ -102,18 +80,6 @@ const App = () => {
               longitudeDelta: currentLocation.longitudeDelta,
             }}
             provider={PROVIDER_GOOGLE}>
-            {/* <Marker
-            draggable
-            coordinate={{
-              latitude: 0,
-              longitude: 0,
-            }}
-            onDragEnd={e =>
-              Alert.alert(JSON.stringify(e.nativeEvent.coordinate))
-            }
-            title={'Test Marker'}
-            description={'This is a description of the marker'}
-          /> */}
 
             <Marker
               draggable
