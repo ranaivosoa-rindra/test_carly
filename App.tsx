@@ -1,20 +1,7 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
 import React, { useEffect, useState } from 'react';
-import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-
+import { Alert, PermissionsAndroid, SafeAreaView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-
 import Geolocation from '@react-native-community/geolocation';
-
 
 
 interface ILocation {
@@ -24,8 +11,8 @@ interface ILocation {
   longitudeDelta: number;
 }
 
-function region(lat: any, lon: any, distance: any) {
-  distance = distance / 0.2;
+function region(lat: any, distance: any) {
+  distance = distance / 0.3;
 
   const circumference = 40075;
   const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
@@ -47,27 +34,39 @@ function region(lat: any, lon: any, distance: any) {
 
 const App = () => {
   const [currentLocation, setcurrentLocation] = useState<ILocation>();
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
 
   useEffect(() => {
 
+    setIsLoading(true);
+    const config = {
+      enableHighAccuracy: true,
+      timeout: 15000,
+    };
 
-    Geolocation.getCurrentPosition(info => {
-
-      const { latitudeDelta, longitudeDelta } = region(
-        info.coords.latitude,
-        info.coords.longitude,
-        info.coords.accuracy,
-      );
-      setcurrentLocation({
-        latitude: info.coords.latitude,
-        longitude: info.coords.longitude,
-        latitudeDelta: latitudeDelta,
-        longitudeDelta: longitudeDelta,
-      });
-    });
+    Geolocation.getCurrentPosition(
+      
+      info => {
+        const { latitudeDelta, longitudeDelta } = region(
+          info.coords.latitude,
+          info.coords.accuracy,
+        );
+        setcurrentLocation({
+          latitude: info.coords.latitude,
+          longitude: info.coords.longitude,
+          latitudeDelta: latitudeDelta,
+          longitudeDelta: longitudeDelta,
+        });
+      },
+      error => {
+        Alert.alert('ERR0R', error.message);
+      },
+      config
+    );
+    setIsLoading(false);
   }, [currentLocation]);
 
-  if (currentLocation) {
+  if (currentLocation && !isLoading) {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
@@ -99,8 +98,12 @@ const App = () => {
     );
   } else {
     return (
-      <View>
-        <Text>Helllloo</Text>
+      <View
+        style={{flex: 1, justifyContent: "center", alignItems:"center", backgroundColor: "#fff"}}
+      >
+        <ActivityIndicator
+          size="large" color="#00ff00"
+        />
       </View>
     );
   }
