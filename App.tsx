@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, PermissionsAndroid, SafeAreaView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet, View, ActivityIndicator } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 
@@ -12,7 +12,7 @@ interface ILocation {
 }
 
 function region(lat: any, distance: any) {
-  distance = distance / 0.3;
+  distance = distance / 0.2;
 
   const circumference = 40075;
   const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
@@ -41,7 +41,7 @@ const App = () => {
     setIsLoading(true);
     const config = {
       enableHighAccuracy: true,
-      timeout: 15000,
+      timeout: 150000,
     };
 
     Geolocation.getCurrentPosition(
@@ -72,6 +72,7 @@ const App = () => {
         <View style={styles.container}>
           <MapView
             style={styles.mapStyle}
+            mapType="hybrid"
             initialRegion={{
               latitude: currentLocation.latitude,
               longitude: currentLocation.longitude,
@@ -83,8 +84,8 @@ const App = () => {
             <Marker
               draggable
               coordinate={{
-                latitude: -18.90098,
-                longitude: 47.5507109,
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
               }}
               onDragEnd={e =>
                 Alert.alert(JSON.stringify(e.nativeEvent.coordinate))
