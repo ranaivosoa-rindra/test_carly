@@ -32,7 +32,6 @@ export const loadingReducer = (state = initialState, action: any) => {
 export const currentUserlocationReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case LOCATION_CHANGE:
-            console.log(action.payload);
             return {
                 ...state,
                 currentUserLocation: action.payload

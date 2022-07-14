@@ -13,7 +13,7 @@ const Navigation = () => {
         <Stack.Screen
           name="Authorisation"
           component={Authorisation}
-          options={{headerShown: true}}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="Map"
