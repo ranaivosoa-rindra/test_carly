@@ -1,14 +1,12 @@
-import {combineReducers } from 'redux';
-import { legacy_createStore as createStore } from "redux";
-import {loadingReducer, currentUserloactionReducer} from '../redux/reducers/loadingReducer'
+import { legacy_createStore as createStore, combineReducers} from 'redux';
+import {loadingReducer, locationSettingReducer, currentUserlocationReducer} from '../redux/reducers/reducer';
+ 
 
+const rootReducer = combineReducers({
+  loading: loadingReducer,
+  location_setting: locationSettingReducer,
+  currentUserLocation : currentUserlocationReducer
+});
+ 
 
-const rootReducer = combineReducers(
-    { loading: loadingReducer ,location: currentUserloactionReducer }
-);
-
-const configureStore = () => {
-    return createStore(rootReducer);
-}
-
-export default configureStore;
+export const store = createStore(rootReducer);

@@ -3,19 +3,14 @@ import React from 'react'
 import { LoadingStyles } from '../styles/globalStyles'
 import { Colors } from '../constants/theme'
 
-const Loading = (props: any) => {
+const Loading = () => {
     return (
-        // <View style={LoadingStyles.container}>
-        //     <ActivityIndicator
-        //         size="large" color={Colors.loadingColor}
-        //     />
-        // </View
-        <>
-            <Text>
-                {props.isLoading}
-            </Text>
-        </>
-    )
+        <View style={LoadingStyles.container}>
+            <ActivityIndicator
+                size="large" color={Colors.loadingColor}
+            />
+        </View>
+    );
 }
 
 export default Loading

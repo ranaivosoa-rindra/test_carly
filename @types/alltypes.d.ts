@@ -1,1 +1,1 @@
-declare module 'react-native-leaflet-routing';
+declare module 'react-native-settings';
