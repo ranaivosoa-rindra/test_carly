@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { Colors } from "../constants/theme";
 
 export const Globalstyles = StyleSheet.create({
@@ -18,6 +18,14 @@ export const Globalstyles = StyleSheet.create({
       right: 0,
       bottom: 0,
     },
+    basicText: {
+      color: "#000",
+      fontSize: 25
+    },
+    basicContainer: {
+      flex: 1, justifyContent: "center", alignItems: "center", 
+    },
+    textInputBox: {borderColor: "#000", borderWidth: 0.5, width: Dimensions.get("screen").width*0.75, paddingLeft: 15, color: Colors.black }
   });
 
 export const LoadingStyles = StyleSheet.create({
